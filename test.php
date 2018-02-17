@@ -19,6 +19,8 @@
 			$test = json_decode($jsonData);
 
 			if (isset($_GET['ready'])) { //Если форма отправлена
+				$scores = 0; //количество верных ответов
+				$numOfQuestions = 0; //количество вопросов
 				foreach ($test as $qId => $question) {
 					echo '<p><b>'.htmlspecialchars(strip_tags($question->text)).'</b></p>';
 					$isRight = true;
@@ -26,12 +28,21 @@
 						if ((isset($_GET[$qId.'_'.$optionId])) xor ($option[1]==1))
 							$isRight = false;
 					}
-					if ($isRight) echo '<p style="color: green;">Верно</p>';
-					else echo '<p style="color: red;">Не верно</p>';
+					if ($isRight) {
+						echo '<p style="color: green;">Верно</p>';
+						$scores++;
+					}
+					else {
+						echo '<p style="color: red;">Не верно</p>';
+					}
+					$numOfQuestions++;
 				}
+				$mark = round($scores*100/$numOfQuestions);
+				echo "<p><b>Количество набранных баллов $mark из 100</b></p>";
 			}
 			else { //Отрисовка формы
 				echo "<form method='GET' action='test.php'>";
+				echo "Имя: <input name='username' required><br>";
 				foreach ($test as $qId => $question) {
 					echo '<p><b>'.htmlspecialchars(strip_tags($question->text)).'</b></p>';
 					foreach ($question->options as $optionId => $option) {
@@ -44,9 +55,11 @@
 
 		}
 		else
-			die('Неверный параметр id');
+			http_response_code(404);
+			die('Неверный номер теста');
 	}
 	else {
+		http_response_code(400);
 		die('Не задан параметр id, указывающий номер теста');
 	}
 

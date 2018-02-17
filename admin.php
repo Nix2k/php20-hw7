@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<title>Загрузка файла с тестом</title>
-</head>
-<body>
-
 <?php
-	include 'menu.php';
-
 	if (isset($_POST['upload'])) { //Если форма отправлена
 		if (isset($_FILES['test'])) { //Файл передан
-			$uploaddir = 'uploads/';
+			$uploaddir = __DIR__.'/uploads/';
 			$uploadfile = $uploaddir . basename($_FILES['test']['name']);
 			if ($_FILES['test']['type']!='application/json')
 				die('Неверный тип файла');
@@ -36,8 +25,7 @@
 			}
 
 			if (move_uploaded_file($_FILES['test']['tmp_name'], $uploadfile)) { //Удалось загрузить файл
-	    		echo '<b>Файл был успешно загружен.</b>';
-	    		echo '</body></html>';
+	    		header('Location: index.php');
 	    		exit();
 			} else
 	    		die ('Ошибка загрузки');
@@ -45,7 +33,15 @@
 			die ('Файл не получен');
 	}
 ?>
-
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>Загрузка файла с тестом</title>
+</head>
+<body>
+	<?php include 'menu.php';?>
 	<h1>Загрузка файла с тестом</h1>
 	<form  enctype="multipart/form-data" method="post" action="admin.php">
 		<p>Файл с тестом <input type="file" name="test" accept=".json"></p>
