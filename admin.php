@@ -3,7 +3,7 @@
 		if (isset($_FILES['test'])) { //Файл передан
 			$uploaddir = __DIR__.'/uploads/';
 			$uploadfile = $uploaddir . basename($_FILES['test']['name']);
-			if ($_FILES['test']['type']!='application/json') {
+			if (substr($_FILES['test']['name'], -4)!='json') {
 				http_response_code(400);
 				die('Неверный тип файла');
 			}
